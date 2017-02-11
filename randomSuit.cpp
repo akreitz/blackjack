@@ -4,10 +4,10 @@
 
 using namespace std;
 
-string randomSuit() {
+std::string randomSuit() {
     int r(0);
-    string suit;
-    string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
+    std::string suit;
+    std::string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
     r = rand() % 4;
     suit = suits[r];
     return suit;
