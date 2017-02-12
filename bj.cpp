@@ -18,21 +18,21 @@ bool bustCheck(int hand);
 
 int main() {
     srand(time(0));
-    int card1(0), card2(0), hand(0);
+    int card1(0), card2(0), pHand(0);
     char response1, response2;
     cout << "Would you like to play blackjack? y/n" << endl;
     cin >> response1;
     while ((response1 == 'y') || (response1 == 'Y')) {
         card1 = selectCard();
         card2 = selectCard();
-        hand = oneCard(card1) + oneCard(card2); // calculates value of hand
-        if (bustCheck(hand)) {
+        pHand = oneCard(card1) + oneCard(card2); // calculates value of hand
+        if (bustCheck(pHand)) {
             card1 = 1;
             card2 = 1;
         }
         cout << tS(card1) << " " << tS(card2) << endl;
-        cout << hand << endl;
-        if (hand == 21) {
+        cout << pHand << endl;
+        if (pHand == 21) {
             cout << "Blackjack!" << endl;
         }
         do { // runs while player is legally able to still hit
@@ -42,22 +42,22 @@ int main() {
                 int card3 = selectCard();
                 cout << tS(card3) << endl;
                 card3 = oneCard(card3);
-                if ((card3 == 11)&&((card3 + hand) > 21)) {
+                if ((card3 == 11)&&((card3 + pHand) > 21)) {
                     card3 = 1;
-                    hand += card3;
+                    pHand += card3;
                 }
-                else if (((card1 == 1) || (card2 == 1))&&((card3 + hand) > 21)) { // causing problems w/ A in hand
-                    hand += (card3 - 10);
+                else if (((card1 == 1) || (card2 == 1))&&((card3 + pHand) > 21)) { // causing problems w/ A in hand
+                    pHand += (card3 - 10);
                 }
                 else {
-                    hand += card3;
+                    pHand += card3;
                 }
-                cout << hand << endl;
+                cout << pHand << endl;
             }
             
-        } while ((!bustCheck(hand))&&((response2 == 'h') || (response2 == 'H')));
-        cout << hand << endl;
-        if (bustCheck(hand)) {
+        } while ((!bustCheck(pHand))&&((response2 == 'h') || (response2 == 'H')));
+        cout << pHand << endl;
+        if (bustCheck(pHand)) {
             cout << "Busted!" << endl;
         }
         cout << "Would you like to play again? y/n" << endl;
