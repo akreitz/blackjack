@@ -1,18 +1,68 @@
+// bj.cpp
+// Author: Alex Kreitz
+// Created: 2-10-17
+// simple blackjack game
+
 #include <iostream>
 #include <string>
 #include <ctime>
 #include <cstdlib>
-//#include "select.h"
 
 using namespace std;
 
 int selectCard();
-string selectSuit();
-void selectHand(int num, string suit);
+int oneCard(int num);
+int twoCards(int num);
+string tS(int num);
+bool bustCheck(int hand);
 
 int main() {
     srand(time(0));
-    selectHand(selectCard(), selectSuit());
+    int card1(0), card2(0), hand(0);
+    char response1, response2;
+    cout << "Would you like to play blackjack? y/n" << endl;
+    cin >> response1;
+    while ((response1 == 'y') || (response1 == 'Y')) {
+        card1 = selectCard();
+        card2 = selectCard();
+        hand = oneCard(card1) + oneCard(card2); // calculates value of hand
+        if (bustCheck(hand)) {
+            card1 = 1;
+            card2 = 1;
+        }
+        cout << tS(card1) << " " << tS(card2) << endl;
+        cout << hand << endl;
+        if (hand == 21) {
+            cout << "Blackjack!" << endl;
+        }
+        do { // runs while player is legally able to still hit
+            cout << "(h)it or (s)tay" << endl;
+            cin >> response2;
+            if ((response2 == 'h') || (response2 == 'H')) {
+                int card3 = selectCard();
+                cout << tS(card3) << endl;
+                card3 = oneCard(card3);
+                if ((card3 == 11)&&((card3 + hand) > 21)) {
+                    card3 = 1;
+                    hand += card3;
+                }
+                else if (((card1 == 1) || (card2 == 1))&&((card3 + hand) > 21)) { // causing problems w/ A in hand
+                    hand += (card3 - 10);
+                }
+                else {
+                    hand += card3;
+                }
+                cout << hand << endl;
+            }
+            
+        } while ((!bustCheck(hand))&&((response2 == 'h') || (response2 == 'H')));
+        cout << hand << endl;
+        if (bustCheck(hand)) {
+            cout << "Busted!" << endl;
+        }
+        cout << "Would you like to play again? y/n" << endl;
+        cin >> response1;
+    }
     return 0;
 }
 
@@ -21,51 +71,59 @@ int selectCard() {
     return num;
 }
 
-string selectSuit() {
-    string suit;
-    string suits[4] = {"Clubs", "Diamonds", "Hearts", "Spades"};
-    int r = rand() % 4;
-    suit = suits[r];
-    return suit;
-}
-
-void selectHand(int num, string suit) {
+int oneCard(int num) {
     int total(0);
-    string x, y;
-    string tens[4] = {"10", "J", "Q", "K"};
-
-    for (int i = 0; i < 2; i++) {
-        num = selectCard();
-        suit = selectSuit();
-        if ((num == 1) || (num > 10)) {
-            switch (num) {
-                case 1:
-                    x = "A";
-                    break;
-                case 11:
-                    x = "J";
-                    break;
-                case 12:
-                    x = "Q";
-                    break;
-                case 13:
-                    x = "K";
-                    break;
-            }
-        }
-        else {
-        x = to_string(num);
-        }
-        if (num >= 10) {
-            num = 10;
-        }
-        if ((num == 1)&&((num + total) <= 11)) {
-            num = 11;
-        }
-        total += num;
-        cout << x << " " << suit << endl;
-
+    if (num >= 10) {
+        total = 10;
     }
-    cout << "total: " << total << endl;
-    
+    else if (num == 1) {
+        total = 11;
+    }
+    else {
+        total = num;
+    }
+    return total;
 }
+
+int twoCards(int num) {
+    int total(0);
+    for (int i = 0; i < 2; i++) {
+        oneCard(num);        
+        total += num;
+    }
+    return total;
+}
+
+string tS(int num) {
+    string card;
+    if ((num == 1) || (num > 10)) {
+        switch (num) {
+            case 1:
+                card = "A";
+                break;
+            case 11:
+                card = "J";
+                break;
+            case 12:
+                card = "Q";
+                break;
+            case 13:
+                card = "K";
+                break;
+        }
+    }
+    else {
+        card = to_string(num);
+    }
+    return card;
+}
+
+bool bustCheck(int hand) {
+    if (hand > 21) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
